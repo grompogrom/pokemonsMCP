@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "kotlin-mcp-server": {
+      "command": "java",
+      "args": [
+        "-Dorg.slf4j.simpleLogger.defaultLogLevel=off",
+        "-jar",
+        "/Users/vladimir.gromov/Code/AILEARN/kotlin-sdk/samples/kotlin-mcp-server/build/libs/kotlin-mcp-server-0.1.0-all.jar"
+      ],
+      "env": {}
+    },
+    "kotlin-mcp-server-sse": {
+      "type": "sse",
+      "url": "http://127.0.0.1:3001/sse",
+      "note": "SSE with plain configuration. Start server with: ./gradlew run --args=\"--sse-server 3001\""
+    },
+    "kotlin-mcp-server-sse-ktor": {
+      "type": "sse",
+      "url": "http://127.0.0.1:3002/",
+      "note": "SSE with Ktor plugin. Start server with: ./gradlew run --args=\"--sse-server-ktor 3002\""
+    }
+  }
+}
+
