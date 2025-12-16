@@ -30,7 +30,10 @@ import io.modelcontextprotocol.kotlin.sdk.types.Role
 import io.modelcontextprotocol.kotlin.sdk.types.ServerCapabilities
 import io.modelcontextprotocol.kotlin.sdk.types.TextContent
 import io.modelcontextprotocol.kotlin.sdk.types.TextResourceContents
+import io.modelcontextprotocol.kotlin.sdk.types.Tool
 import kotlinx.coroutines.Job
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.asSink
@@ -95,6 +98,12 @@ fun configureServer(): Server {
     server.addTool(
         name = "pokeapi_get_pokemon",
         description = "Fetch a summarized view of a Pokémon by name or ID from PokeAPI. Returns id, name, height, weight, types, and sprite URLs.",
+        inputSchema = Tool.Input(
+            properties = JsonObject(mapOf(
+                "name" to JsonPrimitive("string"),
+            )),
+            required = listOf("name")
+        )
     ) { request ->
         logger.debug("=== pokeapi_get_pokemon tool call ===")
         logger.debug("request.name: ${request.name}")
@@ -129,6 +138,12 @@ fun configureServer(): Server {
     server.addTool(
         name = "pokeapi_get_move",
         description = "Fetch basic information about a Pokémon move by name or ID from PokeAPI. Returns id, name, power, PP, accuracy, type, and damage class.",
+        inputSchema = Tool.Input(
+            properties = JsonObject(mapOf(
+                "idOrName" to JsonPrimitive("string"),
+            )),
+            required = listOf("idOrName")
+        )
     ) { request ->
         logger.debug("=== pokeapi_get_move tool call ===")
         logger.debug("request.name: ${request.name}")
@@ -163,6 +178,13 @@ fun configureServer(): Server {
     server.addTool(
         name = "pokeapi_search_pokemon",
         description = "List Pokémon names using the paginated list endpoint from PokeAPI. Supports limit (1-100, default 20) and offset (default 0) parameters.",
+        inputSchema = Tool.Input(
+            properties = JsonObject(mapOf(
+                "limit" to JsonPrimitive("integer"),
+                "offset" to JsonPrimitive("integer"),
+            )),
+            required = emptyList()
+        )
     ) { request ->
         logger.debug("=== pokeapi_search_pokemon tool call ===")
         logger.debug("request.name: ${request.name}")
