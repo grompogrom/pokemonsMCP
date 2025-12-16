@@ -46,14 +46,12 @@ import io.modelcontextprotocol.sample.server.pokeapi.handleGetPokemon
 import io.modelcontextprotocol.sample.server.pokeapi.handleGetMove
 import io.modelcontextprotocol.sample.server.pokeapi.handleSearchPokemon
 import io.ktor.client.HttpClient
-import org.slf4j.LoggerFactory
 
 // Shared HttpClient instance for PokeAPI requests
 private val pokeApiHttpClient: HttpClient = createPokeApiHttpClient()
 private val pokeApiClient = CachedPokeApiClient(
     PokeApiClientImpl(pokeApiHttpClient),
 )
-private val logger = LoggerFactory.getLogger("PokeApiServer")
 
 fun configureServer(): Server {
     val server = Server(
@@ -105,33 +103,16 @@ fun configureServer(): Server {
             required = listOf("name")
         )
     ) { request ->
-        logger.debug("=== pokeapi_get_pokemon tool call ===")
-        logger.debug("request.name: ${request.name}")
-        logger.debug("request.arguments: ${request.arguments}")
-        logger.debug("request.arguments type: ${request.arguments?.javaClass?.name}")
-        logger.debug("request.meta: ${request.meta}")
-        logger.debug("request.meta?.json: ${request.meta?.json}")
-        logger.debug("request.meta?.json type: ${request.meta?.json?.javaClass?.name}")
-        
         // Use arguments, but merge with meta.json if arguments is empty or missing 'name'
         val arguments = request.arguments ?: emptyMap()
-        logger.debug("arguments (after null check): $arguments")
-        logger.debug("arguments.isEmpty(): ${arguments.isEmpty()}")
-        logger.debug("arguments.containsKey('name'): ${arguments.containsKey("name")}")
-        
         val metaJson = request.meta?.json as? Map<String, Any?>
-        logger.debug("metaJson (after cast): $metaJson")
         
         val args = if (arguments.isEmpty() || !arguments.containsKey("name")) {
-            logger.debug("Using metaJson fallback: $metaJson")
             // If arguments is empty or missing name, try to get it from meta.json
             metaJson ?: arguments
         } else {
-            logger.debug("Using arguments: $arguments")
             arguments
         }
-        logger.debug("Final args passed to handleGetPokemon: $args")
-        logger.debug("Final args type: ${args.javaClass.name}")
         handleGetPokemon(pokeApiClient, args)
     }
 
@@ -145,33 +126,16 @@ fun configureServer(): Server {
             required = listOf("idOrName")
         )
     ) { request ->
-        logger.debug("=== pokeapi_get_move tool call ===")
-        logger.debug("request.name: ${request.name}")
-        logger.debug("request.arguments: ${request.arguments}")
-        logger.debug("request.arguments type: ${request.arguments?.javaClass?.name}")
-        logger.debug("request.meta: ${request.meta}")
-        logger.debug("request.meta?.json: ${request.meta?.json}")
-        logger.debug("request.meta?.json type: ${request.meta?.json?.javaClass?.name}")
-        
         // Use arguments, but merge with meta.json if arguments is empty or missing 'idOrName'
         val arguments = request.arguments ?: emptyMap()
-        logger.debug("arguments (after null check): $arguments")
-        logger.debug("arguments.isEmpty(): ${arguments.isEmpty()}")
-        logger.debug("arguments.containsKey('idOrName'): ${arguments.containsKey("idOrName")}")
-        
         val metaJson = request.meta?.json as? Map<String, Any?>
-        logger.debug("metaJson (after cast): $metaJson")
         
         val args = if (arguments.isEmpty() || !arguments.containsKey("idOrName")) {
-            logger.debug("Using metaJson fallback: $metaJson")
             // If arguments is empty or missing idOrName, try to get it from meta.json
             metaJson ?: arguments
         } else {
-            logger.debug("Using arguments: $arguments")
             arguments
         }
-        logger.debug("Final args passed to handleGetMove: $args")
-        logger.debug("Final args type: ${args.javaClass.name}")
         handleGetMove(pokeApiClient, args)
     }
 
@@ -186,32 +150,16 @@ fun configureServer(): Server {
             required = emptyList()
         )
     ) { request ->
-        logger.debug("=== pokeapi_search_pokemon tool call ===")
-        logger.debug("request.name: ${request.name}")
-        logger.debug("request.arguments: ${request.arguments}")
-        logger.debug("request.arguments type: ${request.arguments?.javaClass?.name}")
-        logger.debug("request.meta: ${request.meta}")
-        logger.debug("request.meta?.json: ${request.meta?.json}")
-        logger.debug("request.meta?.json type: ${request.meta?.json?.javaClass?.name}")
-        
         // Use arguments, but merge with meta.json if arguments is empty
         val arguments = request.arguments ?: emptyMap()
-        logger.debug("arguments (after null check): $arguments")
-        logger.debug("arguments.isEmpty(): ${arguments.isEmpty()}")
-        
         val metaJson = request.meta?.json as? Map<String, Any?>
-        logger.debug("metaJson (after cast): $metaJson")
         
         val args = if (arguments.isEmpty()) {
-            logger.debug("Using metaJson fallback: $metaJson")
             // If arguments is empty, try to get it from meta.json
             metaJson ?: arguments
         } else {
-            logger.debug("Using arguments: $arguments")
             arguments
         }
-        logger.debug("Final args passed to handleSearchPokemon: $args")
-        logger.debug("Final args type: ${args.javaClass.name}")
         handleSearchPokemon(pokeApiClient, args)
     }
 
