@@ -31,6 +31,7 @@ import io.modelcontextprotocol.kotlin.sdk.types.ServerCapabilities
 import io.modelcontextprotocol.kotlin.sdk.types.TextContent
 import io.modelcontextprotocol.kotlin.sdk.types.TextResourceContents
 import io.modelcontextprotocol.kotlin.sdk.types.Tool
+import io.modelcontextprotocol.kotlin.sdk.types.ToolSchema
 import kotlinx.coroutines.Job
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -96,12 +97,38 @@ fun configureServer(): Server {
     server.addTool(
         name = "pokeapi_get_pokemon",
         description = "Fetch a summarized view of a Pokémon by name or ID from PokeAPI. Returns id, name, height, weight, types, and sprite URLs.",
-        inputSchema = Tool.Input(
-            properties = JsonObject(mapOf(
-                "name" to JsonPrimitive("string"),
-            )),
+        inputSchema = ToolSchema(
+            properties = JsonObject(
+                mapOf(
+                    "name" to JsonPrimitive("string"),
+                )
+            ),
             required = listOf("name")
-        )
+        ),
+        title = null,
+        outputSchema = ToolSchema(
+            properties = JsonObject(
+                mapOf(
+                    "id" to JsonPrimitive("integer"),
+                    "name" to JsonPrimitive("string"),
+                    "height" to JsonPrimitive("integer"),
+                    "weight" to JsonPrimitive("integer"),
+                    "types" to JsonObject(
+                        mapOf(
+                            "type" to JsonPrimitive("array"),
+                            "items" to JsonObject(
+                                mapOf("type" to JsonPrimitive("string"))
+                            )
+                        )
+                    ),
+                    "frontSprite" to JsonPrimitive("string"),
+                    "shinySprite" to JsonPrimitive("string"),
+                )
+            ),
+            required = listOf("id", "name", "height", "weight", "types")
+        ),
+        toolAnnotations = null,
+        meta = null
     ) { request ->
         // Use arguments, but merge with meta.json if arguments is empty or missing 'name'
         val arguments = request.arguments ?: emptyMap()
@@ -119,12 +146,31 @@ fun configureServer(): Server {
     server.addTool(
         name = "pokeapi_get_move",
         description = "Fetch basic information about a Pokémon move by name or ID from PokeAPI. Returns id, name, power, PP, accuracy, type, and damage class.",
-        inputSchema = Tool.Input(
-            properties = JsonObject(mapOf(
-                "idOrName" to JsonPrimitive("string"),
-            )),
+        inputSchema = ToolSchema(
+            properties = JsonObject(
+                mapOf(
+                    "idOrName" to JsonPrimitive("string"),
+                )
+            ),
             required = listOf("idOrName")
-        )
+        ),
+        title = null,
+        outputSchema = ToolSchema(
+            properties = JsonObject(
+                mapOf(
+                    "id" to JsonPrimitive("integer"),
+                    "name" to JsonPrimitive("string"),
+                    "power" to JsonPrimitive("integer"),
+                    "pp" to JsonPrimitive("integer"),
+                    "accuracy" to JsonPrimitive("integer"),
+                    "type" to JsonPrimitive("string"),
+                    "damageClass" to JsonPrimitive("string"),
+                )
+            ),
+            required = listOf("id", "name")
+        ),
+        toolAnnotations = null,
+        meta = null
     ) { request ->
         // Use arguments, but merge with meta.json if arguments is empty or missing 'idOrName'
         val arguments = request.arguments ?: emptyMap()
@@ -142,13 +188,44 @@ fun configureServer(): Server {
     server.addTool(
         name = "pokeapi_search_pokemon",
         description = "List Pokémon names using the paginated list endpoint from PokeAPI. Supports limit (1-100, default 20) and offset (default 0) parameters.",
-        inputSchema = Tool.Input(
-            properties = JsonObject(mapOf(
-                "limit" to JsonPrimitive("integer"),
-                "offset" to JsonPrimitive("integer"),
-            )),
-            required = emptyList()
-        )
+        inputSchema = ToolSchema(
+            properties = JsonObject(
+                mapOf(
+                    "limit" to JsonPrimitive("integer"),
+                    "offset" to JsonPrimitive("integer"),
+                )
+            ),
+            required = null
+        ),
+        title = null,
+        outputSchema = ToolSchema(
+            properties = JsonObject(
+                mapOf(
+                    "count" to JsonPrimitive("integer"),
+                    "results" to JsonObject(
+                        mapOf(
+                            "type" to JsonPrimitive("array"),
+                            "items" to JsonObject(
+                                mapOf(
+                                    "type" to JsonPrimitive("object"),
+                                    "properties" to JsonObject(
+                                        mapOf(
+                                            "name" to JsonPrimitive("string"),
+                                            "url" to JsonPrimitive("string"),
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    ),
+                    "next" to JsonPrimitive("string"),
+                    "previous" to JsonPrimitive("string"),
+                )
+            ),
+            required = listOf("count", "results")
+        ),
+        toolAnnotations = null,
+        meta = null
     ) { request ->
         // Use arguments, but merge with meta.json if arguments is empty
         val arguments = request.arguments ?: emptyMap()

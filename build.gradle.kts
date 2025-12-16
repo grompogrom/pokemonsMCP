@@ -38,3 +38,9 @@ kotlin {
         )
     }
 }
+
+tasks.shadowJar {
+    archiveBaseName.set("kotlin-mcp-server")
+    archiveClassifier.set("all")
+    mergeServiceFiles()
+}
