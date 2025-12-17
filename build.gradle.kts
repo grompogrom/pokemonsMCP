@@ -22,6 +22,7 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.slf4j.simple)
+    implementation("org.xerial:sqlite-jdbc:3.47.1.0")
 
     // Testing
     testImplementation(libs.kotlin.test)

@@ -46,6 +46,7 @@ import io.modelcontextprotocol.sample.server.pokeapi.createPokeApiHttpClient
 import io.modelcontextprotocol.sample.server.pokeapi.handleGetPokemon
 import io.modelcontextprotocol.sample.server.pokeapi.handleGetMove
 import io.modelcontextprotocol.sample.server.pokeapi.handleSearchPokemon
+import io.modelcontextprotocol.sample.server.reminder.ReminderModule
 import io.ktor.client.HttpClient
 
 // Shared HttpClient instance for PokeAPI requests
@@ -253,6 +254,9 @@ fun configureServer(): Server {
             ),
         )
     }
+
+    // Install reminder module
+    ReminderModule.install(server)
 
     return server
 }
